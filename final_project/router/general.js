@@ -37,9 +37,29 @@ const doesExist = (username) => {
     }
 }
 
+//Promise initalised
+let myPromise = new Promise((resolve,reject) => {
+    setTimeout(() => {
+        const successMessage = "Book(s) successfully fetched!";
+        const errorMessage = "Could not fetch book(s)";
+        const isSuccess = true;
+        if (isSuccess) {
+            resolve(successMessage);
+        } else {
+            reject(errorMessage);
+        }
+    },3000)})
+
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-    return res.status(200).json(books);
+    myPromise.then((successMessage) => {
+        console.log('From Callback: ' + successMessage);
+        res.status(200).json(books);
+    })
+    .catch((errorMessage) => {
+        console.error('Error: '+ errorMessage);
+        res.status(500).send('Unable to fetch books at this time');
+    })
 });
 
 // Get book details based on ISBN
@@ -48,7 +68,14 @@ public_users.get('/isbn/:isbn',function (req, res) {
     const newbook = books[isbn]; // Assuming 'books' is an object with ISBN as keys
 
     if (newbook) {
-        return res.status(200).json(newbook);
+        myPromise.then((successMessage) => {
+            console.log('From Callback: ' + successMessage);
+            res.status(200).json(newbook);
+        })
+        .catch((errorMessage) => {
+            console.error('Error: '+ errorMessage);
+            res.status(500).send('Unable to fetch books at this time');
+        })   
     } else {
         return res.status(404).json({ message: "Book not found" });
     }
@@ -67,7 +94,14 @@ public_users.get('/author/:author',function (req, res) {
     }
 
     if (booksByAuthor.length > 0) {
-        return res.status(200).json(booksByAuthor);
+        myPromise.then((successMessage) => {
+            console.log('From Callback: ' + successMessage);
+            res.status(200).json(booksByAuthor);
+        })
+        .catch((errorMessage) => {
+            console.error('Error: '+ errorMessage);
+            res.status(500).send('Unable to fetch books at this time');
+        })
     } else {
         return res.status(404).json({ message: "No books found by this author" });
     }
@@ -86,7 +120,14 @@ public_users.get('/title/:title',function (req, res) {
     }
 
     if (booksByTitle.length > 0) {
-        return res.status(200).json(booksByTitle);
+        myPromise.then((successMessage) => {
+            console.log('From Callback: ' + successMessage);
+            res.status(200).json(booksByTitle);
+        })
+        .catch((errorMessage) => {
+            console.error('Error: '+ errorMessage);
+            res.status(500).send('Unable to fetch books at this time');
+        })
     } else {
         return res.status(404).json({ message: "No books found with this title" });
     }
